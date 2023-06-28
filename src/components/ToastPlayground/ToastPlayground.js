@@ -2,7 +2,7 @@ import React from 'react';
 
 import Button from '../Button';
 import styles from './ToastPlayground.module.css';
-import PureToastShelf from '../ToastShelf';
+import ToastShelf from '../ToastShelf';
 
 const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 
@@ -11,11 +11,15 @@ function ToastPlayground() {
   const [variant, setVariant] = React.useState('notice');
   const [toasts, setToasts] = React.useState([]);
 
-  function handleToasts(e) {
+  function handleCreateToast(e) {
     e.preventDefault();
     setMessage('');
     setVariant('notice');
-    setToasts([...toasts, {message, variant}]);
+    setToasts([...toasts, {id: crypto.randomUUID(), message, variant}]);
+  }
+
+  function handleDismiss(id) {
+    setToasts(toasts.filter(toast => toast.id !== id));
   }
 
   return (
@@ -25,54 +29,52 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      <PureToastShelf toasts={toasts} setToasts={setToasts}/>
+      <ToastShelf handleDismiss={handleDismiss} toasts={toasts} setToasts={setToasts}/>
 
-      <form onSubmit={handleToasts}>
-        <div className={styles.controlsWrapper}>
-          <div className={styles.row}>
-            <label
-              htmlFor="message"
-              className={styles.label}
-              style={{alignSelf: 'baseline'}}
-            >
-              Message
-            </label>
-            <div className={styles.inputWrapper}>
+      <form className={styles.controlsWrapper} onSubmit={handleCreateToast}>
+        <div className={styles.row}>
+          <label
+            htmlFor="message"
+            className={styles.label}
+            style={{alignSelf: 'baseline'}}
+          >
+            Message
+          </label>
+          <div className={styles.inputWrapper}>
             <textarea id="message" className={styles.messageInput} value={message}
                       onChange={(event) => setMessage(event.target.value)}/>
-            </div>
           </div>
+        </div>
 
-          <div className={styles.row}>
-            <div className={styles.label}>Variant</div>
-            <div
-              className={`${styles.inputWrapper} ${styles.radioWrapper}`}
-            >
-              {VARIANT_OPTIONS.map((option) => {
-                return (
-                  <label htmlFor={`variant-${option}`} key={option}>
-                    <input
-                      id={`variant-${option}`}
-                      type="radio"
-                      name="variant"
-                      value={option}
-                      checked={variant === option}
-                      onChange={(event) => setVariant(event.target.value)}
-                    />
-                    {option}
-                  </label>
-                );
-              })}
-            </div>
+        <div className={styles.row}>
+          <div className={styles.label}>Variant</div>
+          <div
+            className={`${styles.inputWrapper} ${styles.radioWrapper}`}
+          >
+            {VARIANT_OPTIONS.map((option) => {
+              return (
+                <label htmlFor={`variant-${option}`} key={option}>
+                  <input
+                    id={`variant-${option}`}
+                    type="radio"
+                    name="variant"
+                    value={option}
+                    checked={variant === option}
+                    onChange={(event) => setVariant(event.target.value)}
+                  />
+                  {option}
+                </label>
+              );
+            })}
           </div>
+        </div>
 
-          <div className={styles.row}>
-            <div className={styles.label}/>
-            <div
-              className={`${styles.inputWrapper} ${styles.radioWrapper}`}
-            >
-              <Button>Pop Toast!</Button>
-            </div>
+        <div className={styles.row}>
+          <div className={styles.label}/>
+          <div
+            className={`${styles.inputWrapper} ${styles.radioWrapper}`}
+          >
+            <Button>Pop Toast!</Button>
           </div>
         </div>
       </form>

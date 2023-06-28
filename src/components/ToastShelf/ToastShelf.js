@@ -3,25 +3,13 @@ import React from 'react';
 import Toast from '../Toast';
 import styles from './ToastShelf.module.css';
 
-function ToastShelf({toasts, setToasts}) {
-  const [closeToast, setCloseToast] = React.useState(false);
-
-  React.useEffect(() => {
-    if (typeof(closeToast) !== 'number') {
-      return;
-    }
-    const tempToasts = [...toasts];
-    tempToasts.splice(closeToast, 1);
-    setToasts([...tempToasts]);
-    setCloseToast(false);
-  }, [closeToast, setToasts, toasts]);
-
+function ToastShelf({toasts, handleDismiss}) {
   return (
     <ol className={styles.wrapper}>
-      {toasts.map((toast, index) => {
+      {toasts.map((toast) => {
         return (
-          <li key={Math.random()} className={styles.toastWrapper}>
-            <Toast key={Math.random()} index={index} variant={toast.variant} closeToast={setCloseToast}>{toast.message}</Toast>
+          <li key={toast.id} className={styles.toastWrapper}>
+            <Toast id={toast.id} variant={toast.variant} handleDismiss={handleDismiss}>{toast.message}</Toast>
           </li>
         );
       })}
@@ -30,6 +18,4 @@ function ToastShelf({toasts, setToasts}) {
   );
 }
 
-const PureToastShelf = React.memo(ToastShelf);
-
-export default PureToastShelf;
+export default ToastShelf;

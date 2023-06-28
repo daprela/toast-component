@@ -18,7 +18,7 @@ const ICONS_BY_VARIANT = {
   error: AlertOctagon,
 };
 
-function Toast({variant, index, closeToast, children}) {
+function Toast({variant, id, handleDismiss, children}) {
   const IconTag = ICONS_BY_VARIANT[variant];
   return (
     <div className={`${styles.toast} ${styles[variant]}`}>
@@ -29,7 +29,7 @@ function Toast({variant, index, closeToast, children}) {
         {children}
       </p>
       <button className={styles.closeButton}>
-        <X onClick={() => closeToast(index)} size={24} />
+        <X onClick={() => handleDismiss(id)} size={24} />
         <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>
     </div>
